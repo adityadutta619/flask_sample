@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>Finish it</h1>
+        {% for x in range(20) %}
+            {% if x%2 == 1 %}
+                <p>Hello {{x}}</p>
+            {% endif %}
+        {% endfor %}
+
+        {% for x in content %}
+            <p>Hello {{x}}</p>
+        {% endfor %}
+    </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Table</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        nav .logo {
+            margin-right: 20px;
+        }
+        nav input[type="text"] {
+            padding: 8px;
+            margin-left: auto;
+            border: none;
+            border-radius: 4px;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        tr {
+            cursor: move;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #submitButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #submitButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <i class="fas fa-bars"></i> <!-- Navigation icon -->
+    </div>
+    <input type="text" placeholder="Search...">
+</nav>
+
+<h2 style="text-align: center;">Draggable Table</h2>
+
+<table id="draggableTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr data-id="{{ item.id }}">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<button id="submitButton">Submit Order</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(function() {
+        $('#draggableTable tbody').sortable({
+            items: 'tr',
+            cursor: 'move'
+        }).disableSelection();
+
+        $('#submitButton').click(function() {
+            const order = $('#draggableTable tbody').sortable('toArray', { attribute: 'data-id' });
+            $.ajax({
+                type: 'POST',
+                url: '/update_order',
+                contentType: 'application/json',
+                data: JSON.stringify({ order: order }),
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Order updated successfully:', order);
+                        alert('Order submitted successfully!');
+                    }
+                },
+                error: function() {
+                    alert('Failed to submit order.');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
